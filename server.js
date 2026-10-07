@@ -172,4 +172,35 @@ app.get("/candles", async (req, res) => {
         ]);
 
         output[wanted] = {
-         
+                 status: "ok",
+        symbol: market.symbol,
+        display_name: market.display_name,
+        M30: m30,
+        H1: h1
+      };
+    } catch (err) {
+      output[wanted] = {
+        status: "error",
+        symbol: market.symbol,
+        error: err.message
+      };
+    }
+  }
+
+  res.json({
+    generated_at: new Date().toISOString(),
+    candle_count_requested: 200,
+    timeframes: {
+      M30: 1800,
+      H1: 3600
+    },
+    markets: output
+  });
+} catch (err) {
+  res.status(500).json({ error: err.message });
+}
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Deriv Candle Bridge running on port ${PORT}`);
+});
