@@ -48,8 +48,7 @@ function derivRequest(payload, timeoutMs = 15000) {
 
 async function getActiveSymbols() {
   const response = await derivRequest({
-    active_symbols: "brief",
-    product_type: "basic"
+    active_symbols: "brief"
   });
 
   return response.active_symbols || [];
