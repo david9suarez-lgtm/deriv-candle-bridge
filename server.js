@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 // Deriv public WebSocket API.
 // No account login or trading token is used.
-const DERIV_WS = "wss://ws.derivws.com/websockets/v3?app_id=1089";
+const DERIV_WS = "wss://api.derivws.com/trading/v1/options/ws/public";const DERIV_WS = "wss://ws.derivws.com/websockets/v3?app_id=1089";
 
 function derivRequest(payload, timeoutMs = 15000) {
   return new Promise((resolve, reject) => {
