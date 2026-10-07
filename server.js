@@ -194,4 +194,21 @@ app.get("/candles", async (req, res) => {
       generated_at: new Date().toISOString(),
       source: "Deriv",
       candle_count_requested: 200,
-     
+           timeframes: {
+        M30: 1800,
+        H1: 3600
+      },
+      markets: output
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(
+    `Deriv Candle Bridge running on port ${PORT}`
+  );
+});
