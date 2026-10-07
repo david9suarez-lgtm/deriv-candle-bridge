@@ -206,7 +206,50 @@ app.get("/candles", async (req, res) => {
     });
   }
 });
+// Consulta rápida de un solo mercado
+app.get("/market/:symbol", async (req, res) => {
+  try {
+    const requestedSymbol = String(
+      req.params.symbol || ""
+    ).toUpperCase();
 
+    const validSymbols = Object.values(MARKETS);
+
+    if (!validSymbols.includes(requestedSymbol)) {
+      return res.status(404).json({
+        status: "error",
+        error: "Mercado no reconocido",
+        valid_symbols: validSymbols
+      });
+    }
+
+    const [m30, h1] = await Promise.all([
+      getCandles(requestedSymbol, 1800, 200),
+      getCandles(requestedSymbol, 3600, 200)
+    ]);
+
+    res.json({
+      generated_at: new Date().toISOString(),
+      source: "Deriv",
+      status:
+        m30.length > 0 && h1.length > 0
+          ? "ok"
+          : "no_candles",
+      symbol: requestedSymbol,
+      candle_count: {
+        M30: m30.length,
+        H1: h1.length
+      },
+      M30: m30,
+      H1: h1
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      error: err.message
+    });
+  }
+});
 app.listen(PORT, "0.0.0.0", () => {
   console.log(
     `Deriv Candle Bridge running on port ${PORT}`
