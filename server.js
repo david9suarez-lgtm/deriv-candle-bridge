@@ -125,7 +125,19 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/symbols", async (req, res) => {
+app.get("/debug-symbols", async (req, res) => {
+  try {
+    const response = await derivRequest({
+      active_symbols: "brief"
+    });
+
+    res.json(response);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
   try {
     const symbols = await getActiveSymbols();
 
